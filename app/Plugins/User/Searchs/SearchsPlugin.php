@@ -517,16 +517,16 @@ class SearchsPlugin extends UserPluginBase
                 continue;
             }
 
-            // 親子ページを加味してページ表示できるか
-            if (!$page->isVisibleAncestorsAndSelf($page_tree)) {
-                continue;
-            }
-
             // ページの選択「ページ管理のメニュー表示条件に従う」 ＆ フレームの選択「選択したものだけ表示する」以外
             if ($searchs_frame->page_select == SearchsPageSelect::menu_visible_only
                     && $searchs_frame->frame_select != SearchsFrameSelect::selected_only
                     && !$page->isVisibleMenuAncestorsAndSelf($page_tree)) {
                 // メニュー非表示（隠しページ）なので、見れないページ
+                continue;
+            }
+
+            // 親子ページを加味してページ表示できるか
+            if (!$page->isVisibleAncestorsAndSelf($page_tree)) {
                 continue;
             }
 
