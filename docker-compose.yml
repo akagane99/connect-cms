@@ -1,6 +1,5 @@
 services:
     webapp:
-        container_name: webapp
         build:
             context: ./docker/webapp
             args:
@@ -9,7 +8,7 @@ services:
         volumes:
             - .:/var/www/html/connect-cms
         ports:
-            - "80:80"
+            - "${WEB_PORT:-80}:80"
         depends_on:
             db:
                 condition: service_started
@@ -17,10 +16,9 @@ services:
             TZ: ${APP_TZ:-Asia/Tokyo}
             DUSK_DRIVER_URL: ${DUSK_DRIVER_URL:-http://dusk:4444/wd/hub}
     db:
-        container_name: db
         image: ${MYSQL_IMAGE:-mysql:8}
         ports:
-            - "3306:3306"
+            - "${DB_FORWARD_PORT:-3306}:3306"
         restart: always
         volumes:
             - ./docker/db/mysql_data:/var/lib/mysql
@@ -30,15 +28,13 @@ services:
             MYSQL_USER: ${DB_USERNAME:-app}
             MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
             MYSQL_DATABASE: ${DB_DATABASE:-connect}
-            MYSQL_TCP_PORT: ${DB_PORT:-3306}
+            MYSQL_TCP_PORT: 3306
             TZ: ${APP_TZ:-Asia/Tokyo}
     mailhog:
-        container_name: mailhog
         image: mailhog/mailhog
         ports:
-            - "8025:8025"
+            - "${MAILHOG_PORT:-8025}:8025"
     dusk:
-        container_name: dusk
         image: selenium/standalone-chrome:latest
         restart: unless-stopped
         shm_size: 2g
