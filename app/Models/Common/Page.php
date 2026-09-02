@@ -492,6 +492,19 @@ class Page extends Model
     }
 
     /**
+     * 親子ページを加味して メニュー表示（基本表示フラグ）の判断
+     *
+     * - isVisibleAncestorsAndSelf() は権限判定用で base_display_flag を見ないため、こちらで判定する。
+     * - 親がメニュー非表示なら子孫もメニュー非表示（defaultOrderWithDepth() の継承ルールと同じ）。
+     */
+    public function isVisibleMenuAncestorsAndSelf(Collection $page_tree): bool
+    {
+        return $page_tree->every(function ($page_obj) {
+            return $page_obj->base_display_flag == 1;
+        });
+    }
+
+    /**
      * ページのURLを返す
      */
     public function getUrl()
